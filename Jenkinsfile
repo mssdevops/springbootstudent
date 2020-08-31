@@ -6,6 +6,12 @@ pipeline{
     agent any 
      stages{
 //Build the Docker Image based on the Dockerfile
+	      stage(" Maven Clean Package"){
+      def mavenHome =  tool name: "Maven-3.6.1", type: "maven"
+      def mavenCMD = "${mavenHome}/bin/mvn"
+      sh "${mavenCMD} clean package"
+      
+    } 
         stage('Build Docker Image'){
 	  steps{
 	     sh "sudo docker build -t maniengg/springboot1.2:${BUILD_ID} ."   //when we run docker in this step, we're running it via a shell on the docker build-pod container
