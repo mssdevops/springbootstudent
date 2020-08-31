@@ -66,7 +66,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-name: mongoservice
+  name: mongoservice
+  namespace: mani
   labels:
     name: springboot
 spec:
