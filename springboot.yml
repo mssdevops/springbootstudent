@@ -1,50 +1,31 @@
-# Config Map
-kind: ConfigMap 
-apiVersion: v1 
-metadata:
-  name: springapp-configmap
-data:
-  # Configuration values can be set as key-value properties
-  username: springapp
-  password: mongodb@123
----
-# Replication Controller for springapp
 apiVersion: v1
 kind: ReplicationController
 metadata:
+  labels:
+    name: springboot
   name: spring-controller
 spec:
   replicas: 1
-  selector:
-    app: springboot
   template:
     metadata:
       labels:
-        app: springboot
+        name: springboot
     spec:
+      imagePullSecrets:
+      - name: dockerreposecret
       containers:
       - image: image_to_be_deployed
         name: springboot
         ports:
-        - containerPort: 8080  
-        env:
-        - name: MONGO_DB_HOSTNAME
-          value: mongo
-        - name: MONGO_INITDB_ROOT_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: springapp-configmap
-              key: username 
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          valueFrom:
-            configMapKeyRef:
-              name: springapp-configmap
-              key: password       
+        - name: springboot
+          containerPort: 8080      
 ---
-# Node Port Service For SpringApp
+# Node Port Service
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    name: springboot
   name: springboot
 spec:
   type: LoadBalancer
@@ -52,17 +33,48 @@ spec:
     - port: 80
       targetPort: 8080
   selector:
-    app: springboot
+    name: springboot
+---
+# Mongo host path rc
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: mongo
+  name: mongo-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: mongo
+    spec:
+      containers:
+      - image: mongo
+        name: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
+          hostPort: 27017
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-persistent-storage
+        hostPath:
+         path: /tmp/dbbackup
 ---
 # Mongo Node Port RC
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    name: mongo
   name: mongo
 spec:
   type: ClusterIP
   ports:
-  - port: 27017
-    targetPort: 27017
+    - port: 27017
+      targetPort: 27017
   selector:
-    app: mongo
+    name: mongo
