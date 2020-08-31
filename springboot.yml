@@ -54,44 +54,6 @@ spec:
   selector:
     app: springboot
 ---
-# Mongo RC with host path Volume
-apiVersion: v1
-kind: ReplicationController
-metadata:
-  name: mongo-controller
-spec:
-  replicas: 1
-  selector:
-    app: mongo
-  template:
-    metadata:
-      labels:
-        app: mongo
-    spec:
-      containers:
-      - image: mongo
-        name: mongo
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: springapp-configmap
-              key: username 
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          valueFrom:
-            configMapKeyRef:
-              name: springapp-configmap
-              key: password 
-        ports:
-        - containerPort: 27017
-        volumeMounts:
-        - name: mongo-persistent-storage
-          mountPath: /data/db
-      volumes:
-      - name: mongo-persistent-storage
-        hostPath:
-         path: /tmp/dbbackup
----
 # Mongo Node Port RC
 apiVersion: v1
 kind: Service
