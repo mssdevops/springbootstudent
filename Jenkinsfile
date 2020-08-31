@@ -44,3 +44,5 @@ pipeline{
          sh "sed -i -e 's,image_to_be_deployed,'maniengg/springboot1.2:${BUILD_ID}',g' springboot.yml"
     }
 }
+
+     }
