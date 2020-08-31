@@ -11,7 +11,7 @@ pipeline{
 //Build the Docker Image based on the Dockerfile
        stage(" Maven Clean Package"){
 	  steps{
-	    sh "mvn clean package"
+	    sh "mvn -Dmaven.test.failure.ignore=true install"
 	  }
        }
         stage('Build Docker Image'){
