@@ -4,15 +4,15 @@ currentBuild.displayName="StudentSPring boot-#"+currentBuild.number
 //This is the Declarative Pipeline Script
 pipeline{
     agent any 
+	 tools {
+        maven 'Maven-3.6.1'
+    } 
      stages{
 //Build the Docker Image based on the Dockerfile
        stage(" Maven Clean Package"){
 	  steps{
-        def mavenHome =  tool name: "Maven-3.6.1", type: "maven"
-        def mavenCMD = "${mavenHome}/bin/mvn"
-        sh "${mavenCMD} clean package"
-      
-    } 
+	    sh "mvn clean package"
+	  }
        }
         stage('Build Docker Image'){
 	  steps{
