@@ -19,7 +19,7 @@ spec:
       - name: springbootapp
         image: image_to_be_deployed
         ports:
-        - containerPort: 8080
+        - containerPort: 80
 ---
 # Node Port Service
 apiVersion: v1
@@ -33,7 +33,6 @@ spec:
   type: LoadBalancer
   ports:
     - port: 80
-      targetPort: 8080
   selector:
     name: springboot
 ---
